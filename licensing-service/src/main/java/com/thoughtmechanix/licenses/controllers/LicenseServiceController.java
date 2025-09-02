@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping(value="v1/organizations/{organizationId}/licenses")
@@ -39,10 +40,15 @@ public class LicenseServiceController {
     }
 
     @RequestMapping(value="/{licenseId}",method = RequestMethod.GET)
-    public License getLicenses( @PathVariable("organizationId") String organizationId,
+    public ResponseEntity<License> getLicenses( @PathVariable("organizationId") String organizationId,
                                 @PathVariable("licenseId") String licenseId) {
         logger.debug("Found tmx-correlation-id in license-service-controller: {} ", request.getHeader("tmx-correlation-id"));
-        return licenseService.getLicense(organizationId, licenseId);
+        License l = licenseService.getLicense(organizationId, licenseId);
+        if(l == null){
+            return new ResponseEntity( HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity(l, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value="{licenseId}",method = RequestMethod.PUT)

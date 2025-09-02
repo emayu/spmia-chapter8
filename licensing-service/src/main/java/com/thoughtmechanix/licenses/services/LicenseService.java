@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @Service
 public class LicenseService {
@@ -30,7 +32,9 @@ public class LicenseService {
 
     public License getLicense(String organizationId,String licenseId) {
         License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
-
+        if(license == null){
+            return license;
+        }
         Organization org = getOrganization(organizationId);
 
         return license
